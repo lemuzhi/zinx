@@ -69,8 +69,15 @@ func (s *Server) Stop()  {
 
 
 func (s *Server) Serve()  {
-	fmt.Println("开始运行")
-	s.Stop()
+	fmt.Println("启动服务器")
+	s.Start()
+
+	//TODO 做一些启动服务器之后的额外业务
+
+	//阻塞状态，避免Serve结束，导致Start提前结束
+	select {
+
+	}
 }
 
 func NewServer(name string) ziface.IServer {
