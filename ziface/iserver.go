@@ -1,8 +1,7 @@
 package ziface
 
-
 //定义一个服务器接口
-type IServer struct {
+type IServer interface {
 	//启动服务
 	Start()
 	//停止服务
