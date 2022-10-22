@@ -101,7 +101,7 @@ func (c *Connection) GetConnID() uint32 {
 
 // RemoteAddr 获取远程客户端的TCP状态 IP port
 func (c *Connection) RemoteAddr() net.Addr {
-	return c.RemoteAddr()
+	return c.Conn.RemoteAddr()
 }
 
 // Send 发送数据，将数据发送给远程的客户端
