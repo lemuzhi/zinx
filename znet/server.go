@@ -1,17 +1,30 @@
 package znet
 
 import (
+	"errors"
 	"fmt"
 	"github.com/lemuzhi/zinx/ziface"
 	"net"
 )
 
-//IServer接口实现，定义一个服务器模块
+// Server IServer接口实现，定义一个服务器模块
 type Server struct {
 	Name string //服务器名称
 	IPVersion string //ip版本
 	IP string //ip地址
 	Port int //监听端口
+}
+
+// CallBackToClient 定义当前客户端链接所绑定的HandleAPI（这个hanlde目前写死的，以后优化应该由用户自定义handle方法）
+func CallBackToClient(conn *net.TCPConn, data []byte, cnt int) error {
+	//回显的业务
+	fmt.Println("Conn Handle CallBackToClient...")
+	if _, err := conn.Write(data[:cnt]); err != nil {
+		fmt.Println("To client callback write data error: ", err)
+		return errors.New("CallBackToClient error")
+	}
+
+	return nil
 }
 
 func (s *Server) Start()  {
@@ -24,7 +37,7 @@ func (s *Server) Start()  {
 			fmt.Printf("解决tcp地址错误:", err)
 			return
 		}
-		fmt.Println("句柄=",addr)
+		//fmt.Println("句柄=",addr)
 		//2、监听服务器的地址
 		listenner, err := net.ListenTCP(s.IPVersion, addr)
 		if err != nil {
@@ -32,6 +45,10 @@ func (s *Server) Start()  {
 			return
 		}
 		fmt.Println("Zinx启动成功，", s.Name)
+
+		var cid uint32
+		cid = 0
+
 		//3、阻塞等待客户端链接，处理客户端链接业务（读写）
 		for {
 			//如果有客户端链接过来，阻塞会返回
@@ -41,23 +58,12 @@ func (s *Server) Start()  {
 				continue
 			}
 
-			//已经与客户端建立链接，做一些业务，做一个最基本的最大512字节长度的回写业务
-			go func() {
-				for {
-					buf := make([]byte, 512)
-					cnt, err := conn.Read(buf)
-					if err != nil {
-						fmt.Println("接收数据出错：", err)
-						continue
-					}
-					//回写功能
-					_, err = conn.Write(buf[:cnt])
-					if err != nil {
-						fmt.Println("回写数据失败：", err)
-						continue
-					}
-				}
-			}()
+			//将处理新链接的业务方法和conn进行绑定，得到我们的链接模块
+			dealConn := NewConnection(conn, cid, CallBackToClient)
+			cid++
+
+			//启动当前的链接业务处理
+			go dealConn.Start()
 		}
 	}()
 }

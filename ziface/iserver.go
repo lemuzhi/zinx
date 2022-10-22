@@ -1,6 +1,6 @@
 package ziface
 
-//定义一个服务器接口
+//定义一个服务器模块的抽象层接口
 type IServer interface {
 	//启动服务
 	Start()
