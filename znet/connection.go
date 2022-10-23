@@ -30,18 +30,18 @@ type Connection struct {
 // NewConnection 初始化连接模块的方法
 func NewConnection(conn *net.TCPConn, connID uint32, router ziface.IRouter) *Connection {
 	c := &Connection{
-		Conn: conn,
-		ConnID: connID,
-		isClosed:false,
+		Conn:     conn,
+		ConnID:   connID,
+		isClosed: false,
 		ExitChan: make(chan bool, 1),
-		Router: router,
+		Router:   router,
 	}
 	return c
 }
 
-func (c *Connection) StartReader()  {
+func (c *Connection) StartReader() {
 	fmt.Println("Reader Goroutine is running...")
-	defer fmt.Println("connID=", c,c.ConnID, "Reader is exit, remote addr is ", c.RemoteAddr().String())
+	defer fmt.Println("connID=", c, c.ConnID, "Reader is exit, remote addr is ", c.RemoteAddr().String())
 	defer c.Stop()
 
 	for {
@@ -71,18 +71,17 @@ func (c *Connection) StartReader()  {
 }
 
 // Start 启动链接 让当前的链接准备开始工作
-func (c *Connection) Start()  {
+func (c *Connection) Start() {
 	fmt.Println("Conn Start()... ConnID=", c.ConnID)
 	//启动从当前链接读数据的业务
 	go c.StartReader()
 
 	//TODO  启动从当前链接写数据的业务
 
-
 }
 
 // Stop 停止链接 结束当前链接的工作
-func (c *Connection) Stop()  {
+func (c *Connection) Stop() {
 	fmt.Println("Conn Stop()... ConnID=", c.ConnID)
 
 	//如果的当前链接已经关闭
@@ -98,6 +97,7 @@ func (c *Connection) Stop()  {
 	//回收资源
 	close(c.ExitChan)
 }
+
 // GetTCPConnection 获取当前链接的绑定socket conn
 func (c *Connection) GetTCPConnection() *net.TCPConn {
 	return c.Conn

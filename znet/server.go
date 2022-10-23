@@ -8,14 +8,14 @@ import (
 
 // Server IServer接口实现，定义一个服务器模块
 type Server struct {
-	Name string //服务器名称
-	IPVersion string //ip版本
-	IP string //ip地址
-	Port int //监听端口
-	Router ziface.IRouter  //当前的Server添加一个router, server注册的链接对应的处理业务
+	Name      string         //服务器名称
+	IPVersion string         //ip版本
+	IP        string         //ip地址
+	Port      int            //监听端口
+	Router    ziface.IRouter //当前的Server添加一个router, server注册的链接对应的处理业务
 }
 
-func (s *Server) Start()  {
+func (s *Server) Start() {
 	fmt.Printf("Server Listenner at IP:%s:%d\n", s.IP, s.Port)
 
 	go func() {
@@ -56,22 +56,18 @@ func (s *Server) Start()  {
 	}()
 }
 
-
-func (s *Server) Stop()  {
+func (s *Server) Stop() {
 
 }
 
-
-func (s *Server) Serve()  {
+func (s *Server) Serve() {
 	fmt.Println("启动服务器")
 	s.Start()
 
 	//TODO 做一些启动服务器之后的额外业务
 
 	//阻塞状态，避免Serve结束，导致Start提前结束
-	select {
-
-	}
+	select {}
 }
 
 // AddRouter 路由功能： 给当前的服务注册一个路由方法，供客户端的链接处理使用
@@ -82,11 +78,11 @@ func (s *Server) AddRouter(router ziface.IRouter) {
 
 func NewServer(name string) ziface.IServer {
 	s := &Server{
-		Name: name,
+		Name:      name,
 		IPVersion: "tcp4",
-		IP: "0.0.0.0",
-		Port: 8999,
-		Router: nil,
+		IP:        "0.0.0.0",
+		Port:      8999,
+		Router:    nil,
 	}
 	return s
 }
