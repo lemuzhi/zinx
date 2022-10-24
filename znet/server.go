@@ -2,6 +2,7 @@ package znet
 
 import (
 	"fmt"
+	"github.com/lemuzhi/zinx/utils"
 	"github.com/lemuzhi/zinx/ziface"
 	"net"
 )
@@ -16,7 +17,10 @@ type Server struct {
 }
 
 func (s *Server) Start() {
-	fmt.Printf("Server Listenner at IP:%s:%d\n", s.IP, s.Port)
+	fmt.Printf(`
+		欢迎使用Zinx系统!
+		Server name : %s
+		Server Listenner at IP:%s:%d`, s.Name, s.IP, s.Port)
 
 	go func() {
 		//1、获取一个TCP的地址
@@ -78,10 +82,10 @@ func (s *Server) AddRouter(router ziface.IRouter) {
 
 func NewServer(name string) ziface.IServer {
 	s := &Server{
-		Name:      name,
+		Name:      utils.GlobalObject.Name,
 		IPVersion: "tcp4",
-		IP:        "0.0.0.0",
-		Port:      8999,
+		IP:        utils.GlobalObject.Host,
+		Port:      utils.GlobalObject.TcpPort,
 		Router:    nil,
 	}
 	return s
