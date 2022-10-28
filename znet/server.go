@@ -18,15 +18,15 @@ type Server struct {
 
 func (s *Server) Start() {
 	fmt.Printf(`
-		欢迎使用Zinx系统!
-		Server name : %s
-		Server Listenner at IP:%s:%d`, s.Name, s.IP, s.Port)
+	欢迎使用Zinx系统!
+	Server name : %s
+	Server Listenner at IP:%s:%d`, s.Name, s.IP, s.Port)
 
 	go func() {
 		//1、获取一个TCP的地址
 		addr, err := net.ResolveTCPAddr(s.IPVersion, fmt.Sprintf("%s:%d", s.IP, s.Port))
 		if err != nil {
-			fmt.Printf("解决tcp地址错误:", err)
+			fmt.Println("解决tcp地址错误:", err)
 			return
 		}
 		//fmt.Println("句柄=",addr)
@@ -65,7 +65,6 @@ func (s *Server) Stop() {
 }
 
 func (s *Server) Serve() {
-	fmt.Println("启动服务器")
 	s.Start()
 
 	//TODO 做一些启动服务器之后的额外业务
