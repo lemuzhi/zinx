@@ -39,7 +39,7 @@ func (d *DataPack) Pack(msg ziface.IMessage) ([]byte, error) {
 	}
 
 	//将data数据 写进dataBuff中
-	err = binary.Write(dataBuff, binary.LittleEndian, msg.GetMsgData())
+	err = binary.Write(dataBuff, binary.LittleEndian, msg.GetData())
 	if err != nil {
 		return nil, err
 	}
