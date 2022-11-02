@@ -9,11 +9,12 @@ import (
 
 // Server IServer接口实现，定义一个服务器模块
 type Server struct {
-	Name      string         //服务器名称
-	IPVersion string         //ip版本
-	IP        string         //ip地址
-	Port      int            //监听端口
-	Router    ziface.IRouter //当前的Server添加一个router, server注册的链接对应的处理业务
+	Name      string //服务器名称
+	IPVersion string //ip版本
+	IP        string //ip地址
+	Port      int    //监听端口
+	//当前 server的消息管理模块，用来绑定MsgID和对应的处理业务API关系
+	MsgHandler ziface.IMsgHandle
 }
 
 func (s *Server) Start() {
@@ -51,7 +52,7 @@ func (s *Server) Start() {
 			}
 
 			//将处理新链接的业务方法和conn进行绑定，得到我们的链接模块
-			dealConn := NewConnection(conn, cid, s.Router)
+			dealConn := NewConnection(conn, cid, s.MsgHandler)
 			cid++
 
 			//启动当前的链接业务处理
@@ -74,18 +75,18 @@ func (s *Server) Serve() {
 }
 
 // AddRouter 路由功能： 给当前的服务注册一个路由方法，供客户端的链接处理使用
-func (s *Server) AddRouter(router ziface.IRouter) {
-	s.Router = router
+func (s *Server) AddRouter(msgID uint32, router ziface.IRouter) {
+	s.MsgHandler.AddRouer(msgID, router)
 	fmt.Println("Add Router Success!!!")
 }
 
 func NewServer(name string) ziface.IServer {
 	s := &Server{
-		Name:      utils.GlobalObject.Name,
-		IPVersion: "tcp4",
-		IP:        utils.GlobalObject.Host,
-		Port:      utils.GlobalObject.TcpPort,
-		Router:    nil,
+		Name:       utils.GlobalObject.Name,
+		IPVersion:  "tcp4",
+		IP:         utils.GlobalObject.Host,
+		Port:       utils.GlobalObject.TcpPort,
+		MsgHandler: NewMsgHandle(),
 	}
 	return s
 }
