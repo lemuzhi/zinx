@@ -43,8 +43,8 @@ func init() {
 		Host:             "0.0.0.0",
 		MaxConn:          1000,
 		MaxPackageSize:   4096,
-		WorkerPoolSize:   10,
-		MaxWorkerTaskLen: 1024,
+		WorkerPoolSize:   10,   //worker工作池的队列个数
+		MaxWorkerTaskLen: 1024, //每个worker对应的消息队列的任务数量最大值
 	}
 
 	//应该尝试从conf/zinx/json去加载一些用户自定义的参数
