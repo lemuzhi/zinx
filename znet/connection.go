@@ -47,18 +47,10 @@ func NewConnection(conn *net.TCPConn, connID uint32, msgHandler ziface.IMsgHandl
 
 func (c *Connection) StartReader() {
 	fmt.Println("[Reader Goroutine is running...]")
-	defer fmt.Println("connID=", c, c.ConnID, "[Reader is exit!], remote addr is ", c.RemoteAddr().String())
+	defer fmt.Println("[Reader is exit!], connID=", c.ConnID, " remote addr is ", c.RemoteAddr().String())
 	defer c.Stop()
 
 	for {
-		////读取客户端的数据到buf中，最大512字节
-		//buf := make([]byte, utils.GlobalObject.MaxPackageSize)
-		//_, err := c.Conn.Read(buf)
-		//if err != nil {
-		//	fmt.Println("read client data err:", err)
-		//	continue
-		//}
-
 		//创建一个拆包和解包对象
 		dp := NewDataPack()
 
@@ -101,8 +93,8 @@ func (c *Connection) StartReader() {
 
 // StartWrite 写消息Goroutine, 专门发送给客户端的消息模块
 func (c *Connection) StartWrite() {
-	fmt.Println("[Writer Goroutine is runing...]")
-	defer fmt.Println(c.RemoteAddr().String(), " [conn Writer exit!]")
+	fmt.Println("[Writer Goroutine is running...]")
+	defer fmt.Println("[conn Writer exit!] ", c.RemoteAddr().String())
 
 	//不断的阻塞等待channel的消息，然后写给客户端
 	for {

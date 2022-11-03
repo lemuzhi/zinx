@@ -23,32 +23,36 @@ type GlobalObj struct {
 	/*
 		zinx
 	*/
-	Version        string //当前Zinx的版本号
-	MaxConn        int    //当前服务器主机允许的最大链接数
-	MaxPackageSize uint32 //当前Zinx框架数据包的最大值
+	Version          string //当前Zinx的版本号
+	MaxConn          int    //当前服务器主机允许的最大链接数
+	MaxPackageSize   uint32 //当前Zinx框架数据包的最大值
+	WorkerPoolSize   uint32 //当前业务工作Worker池的Goroutine数量
+	MaxWorkerTaskLen uint32 //Zinx框架允许用户最多开辟多少个Worker（限定条件）
 }
 
 // GlobalObject 定义一个全局对外的GlobalObj
 var GlobalObject *GlobalObj
 
-//提供一个init方法，初始化当前的GlobalObject
-func init()  {
+// 提供一个init方法，初始化当前的GlobalObject
+func init() {
 	//如果配置文件没有加载，使用默认值，用户也可以自己进行相应配置
 	GlobalObject = &GlobalObj{
-		Name: "ZinxServerApp",
-		Version: "V0.5",
-		TcpPort: 8999,
-		Host: "0.0.0.0",
-		MaxConn: 1000,
-		MaxPackageSize: 4096,
+		Name:             "ZinxServerApp",
+		Version:          "V0.7",
+		TcpPort:          8999,
+		Host:             "0.0.0.0",
+		MaxConn:          1000,
+		MaxPackageSize:   4096,
+		WorkerPoolSize:   10,
+		MaxWorkerTaskLen: 1024,
 	}
 
 	//应该尝试从conf/zinx/json去加载一些用户自定义的参数
 	GlobalObject.Reload()
 }
 
-//从zinx.json去加载用于自定义的参数
-func (g *GlobalObj) Reload()  {
+// 从zinx.json去加载用于自定义的参数
+func (g *GlobalObj) Reload() {
 	data, err := ioutil.ReadFile("conf/zinx.json")
 	if err != nil {
 		panic(err)
