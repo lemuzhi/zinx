@@ -24,6 +24,9 @@ func (s *Server) Start() {
 	Server Listenner at IP:%s:%d`, s.Name, s.IP, s.Port)
 
 	go func() {
+		//0、开启消息队列及Worker工作池
+		s.MsgHandler.StartWorkerPool()
+
 		//1、获取一个TCP的地址
 		addr, err := net.ResolveTCPAddr(s.IPVersion, fmt.Sprintf("%s:%d", s.IP, s.Port))
 		if err != nil {
